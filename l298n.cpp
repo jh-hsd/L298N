@@ -48,7 +48,7 @@ int L298N::getSpeed() const {
     return _speed;
 }
 
-int L298N::_calculateDutyCycle() {
+int L298N::_dutyCycleFromPercent() {
     int d = 255 - _minPwm;
     int l = d / 100 * _speed;
     return (l + _minPwm);
@@ -76,7 +76,7 @@ void L298N::_update() {
         digitalWrite(_dir2Pin, LOW);
         break;
     default:
-        analogWrite(_speedPin, _calculateDutyCycle());
+        analogWrite(_speedPin, _dutyCycleFromPercent());
         break;
     }
 }

@@ -21,7 +21,7 @@ class L298N {
         int getSpeed() const;
  
     private:
-        int _calculateDutyCycle();
+        int _dutyCycleFromPercent();
         void _update();
 
         /* pins */
