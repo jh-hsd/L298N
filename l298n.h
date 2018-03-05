@@ -17,7 +17,7 @@ class L298N {
         void setDirection(L298N::State dir);
         L298N::State getDirection() const;
 
-        void setSpeed(int speed);
+        void setSpeed(int speed, int duration = 0);
         int getSpeed() const;
  
     private:

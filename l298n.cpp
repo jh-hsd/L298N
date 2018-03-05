@@ -29,7 +29,17 @@ L298N::State L298N::getDirection() const {
     return _direction;
 }
 
-void L298N::setSpeed(int speed) {
+void L298N::setSpeed(int speed, int duration) {
+    int s = duration <= 0 ? 0 : duration / 10;
+    int d = (speed - _speed) / s;
+
+    /* loop over steps if any */
+    for (int i = 0; i < s; i++) {
+        _speed += d;
+        _update();
+    }
+
+    /* ensure correct final value */
     _speed = speed;
     _update();
 }
