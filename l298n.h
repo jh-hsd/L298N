@@ -37,7 +37,8 @@ class L298N {
  
     private:
         int _dutyCycleFromPercent();
-        void _update(int changeSpeed, int changeDirection);
+        void _off();
+        void _update();
 
         /* pins */
         int _dir1Pin;

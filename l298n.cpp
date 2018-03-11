@@ -22,7 +22,7 @@ L298N::L298N(int dir1Pin, int dir2Pin,
 
 void L298N::setDirection(L298N::State dir) {
     _direction = dir;
-    _update(0, 1);
+    _update();
 }
 
 L298N::State L298N::getDirection() const {
@@ -37,10 +37,14 @@ void L298N::setRawSpeed(int speed, int duration) {
     speed = constrain(speed, 0, 255);
     steps = speed - _speed;
     delayTime = duration / abs(steps);
-    offset = (speed > _speed) ? +1 : -1;
+    offset = (steps > 0) ? +1 : -1;
+
+    /* ensure that direction is set */
+    if (_speed == OFF && !!speed)
+        _update();
 
     /* loop over steps if any */
-    for (int i = 0; i < steps; i++) {
+    for (int i = 0; i < abs(steps); i++) {
         _speed += offset;
         analogWrite(_speedPin, _speed);
         delay(delayTime);
@@ -59,18 +63,18 @@ void L298N::setSpeed(int speed, int duration) {
     speed = constrain(speed, 0, 100);
     steps = speed - _speed;
     delayTime = duration / abs(steps);
-    offset = (speed > _speed) ? +1 : -1;
+    offset = (steps > 0) ? +1 : -1;
 
     /* loop over steps if any */
-    for (int i = 0; i < steps; i++) {
+    for (int i = 0; i < abs(steps); i++) {
         _speed += offset;
-        _update(1, 0);
+        _update();
         delay(delayTime);
     }
 
     /* ensure correct final value */
     _speed = speed;
-    _update(1, 0);
+    _update();
 }
 
 int L298N::getSpeed() const {
@@ -83,12 +87,25 @@ int L298N::_dutyCycleFromPercent() {
     return (l + _minPwm);
 }
 
-void L298N::_update(int changeSpeed, int changeDirection) {
+void L298N::_off() {
+    digitalWrite(_dir1Pin, LOW);
+    digitalWrite(_dir2Pin, LOW);
+    analogWrite(_speedPin, 0);
+}
+
+void L298N::_update() {
+    switch (_speed) {
+    case OFF:
+        _off();
+        break;
+    default:
+        analogWrite(_speedPin, _dutyCycleFromPercent());
+        break;
+    }
+    
     switch (_direction) {
     case OFF:
-        digitalWrite(_dir1Pin, LOW);
-        digitalWrite(_dir2Pin, LOW);
-        analogWrite(_speedPin, 0);
+        _off();
         break;
     case CW:
         digitalWrite(_dir1Pin, HIGH);
@@ -97,17 +114,6 @@ void L298N::_update(int changeSpeed, int changeDirection) {
     case CCW:
         digitalWrite(_dir1Pin, LOW);
         digitalWrite(_dir2Pin, HIGH);
-        break;
-    }
-
-    switch (_speed) {
-    case OFF:
-        digitalWrite(_dir1Pin, LOW);
-        digitalWrite(_dir2Pin, LOW);
-        analogWrite(_speedPin, 0);
-        break;
-    default:
-        analogWrite(_speedPin, _dutyCycleFromPercent());
         break;
     }
 }
