@@ -22,26 +22,55 @@ L298N::L298N(int dir1Pin, int dir2Pin,
 
 void L298N::setDirection(L298N::State dir) {
     _direction = dir;
-    _update();
+    _update(0, 1);
 }
 
 L298N::State L298N::getDirection() const {
     return _direction;
 }
 
-void L298N::setSpeed(int speed, int duration) {
-    int s = duration <= 0 ? 0 : duration / 10;
-    int d = (speed - _speed) / s;
+void L298N::setRawSpeed(int speed, int duration) {
+    int steps;
+    int delayTime;
+    int offset;
+
+    speed = constrain(speed, 0, 255);
+    steps = speed - _speed;
+    delayTime = duration / abs(steps);
+    offset = (speed > _speed) ? +1 : -1;
 
     /* loop over steps if any */
-    for (int i = 0; i < s; i++) {
-        _speed += d;
-        _update();
+    for (int i = 0; i < steps; i++) {
+        _speed += offset;
+        analogWrite(_speedPin, _speed);
+        delay(delayTime);
     }
 
     /* ensure correct final value */
     _speed = speed;
-    _update();
+    analogWrite(_speedPin, _speed);
+}
+
+void L298N::setSpeed(int speed, int duration) {
+    int steps;
+    int delayTime;
+    int offset;
+
+    speed = constrain(speed, 0, 100);
+    steps = speed - _speed;
+    delayTime = duration / abs(steps);
+    offset = (speed > _speed) ? +1 : -1;
+
+    /* loop over steps if any */
+    for (int i = 0; i < steps; i++) {
+        _speed += offset;
+        _update(1, 0);
+        delay(delayTime);
+    }
+
+    /* ensure correct final value */
+    _speed = speed;
+    _update(1, 0);
 }
 
 int L298N::getSpeed() const {
@@ -54,11 +83,12 @@ int L298N::_dutyCycleFromPercent() {
     return (l + _minPwm);
 }
 
-void L298N::_update() {
+void L298N::_update(int changeSpeed, int changeDirection) {
     switch (_direction) {
     case OFF:
         digitalWrite(_dir1Pin, LOW);
         digitalWrite(_dir2Pin, LOW);
+        analogWrite(_speedPin, 0);
         break;
     case CW:
         digitalWrite(_dir1Pin, HIGH);
@@ -74,6 +104,7 @@ void L298N::_update() {
     case OFF:
         digitalWrite(_dir1Pin, LOW);
         digitalWrite(_dir2Pin, LOW);
+        analogWrite(_speedPin, 0);
         break;
     default:
         analogWrite(_speedPin, _dutyCycleFromPercent());
