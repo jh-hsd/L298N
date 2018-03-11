@@ -31,9 +31,21 @@ void dcMotAdjustHelp() {
     Serial.println("       f: turn on at full speed");
 }
 
+void dcMotPrintStat() {
+    Serial.print("Setup: Motor turns ");
+    Serial.print(mot.getDirection() == L298N::CW ?
+                 "clock-wise" : "counter-clock-wise");
+    Serial.print(" at ");
+    Serial.println(mot.getSpeed());
+}
+
 void dcMotAdjust() {
     int c;
     Serial.println("Setup: Motor off");
+    mot.setDirection(L298N::CW);
+    mot.setRawSpeed(L298N::OFF);
+    dcMotPrintStat();
+
     for (;;) {
         c = Serial.read();
         switch (c) {
@@ -59,13 +71,8 @@ void dcMotAdjust() {
             mot.setRawSpeed(255);
             break;
         }
-        if (c > 0) {
-            Serial.print("Setup: Motor turns ");
-            Serial.print(mot.getDirection() == L298N::CW ?
-                         "clock-wise" : "counter-clock-wise");
-            Serial.print(" at ");
-            Serial.println(mot.getSpeed());
-        }
+        if (c > 0)
+            dcMotPrintStat();
     }
 }
 
