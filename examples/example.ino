@@ -1,6 +1,6 @@
 /* L298N library test */
 
-#include "l298n.h"
+#include "L298N.h"
 
 #define IN1 2
 #define IN2 3

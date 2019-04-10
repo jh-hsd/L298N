@@ -1,7 +1,7 @@
 /* L298N motor control library */
 
 #include "Arduino.h"
-#include "l298n.h"
+#include "L298N.h"
 
 L298N::L298N(int dir1Pin, int dir2Pin,
              int speedPin, int minPwm) :
