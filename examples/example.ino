@@ -1,4 +1,4 @@
-/* L298N library test */
+// L298N library test
 
 #include "L298N.h"
 
@@ -10,17 +10,19 @@
 #define DC_MOT_ADJUST 1
 //#define DC_MOT_RUN 1
 
-/* DC motor setup */
+// DC motor setup
 #ifdef DC_MOT
 L298N mot(IN1, IN2, ENA, 60);
 #endif
 
-void dcMotSetup() {
+void dcMotSetup()
+{
     Serial.begin(115200);
     Serial.println("*** DC motor demo for L298N ***");
 }
 
-void dcMotAdjustHelp() {
+void dcMotAdjustHelp()
+{
     Serial.println("Setup: use following keys");
     Serial.println("       h: print help");
     Serial.println("       c: rotate clock-wise");
@@ -31,7 +33,8 @@ void dcMotAdjustHelp() {
     Serial.println("       f: turn on at full speed");
 }
 
-void dcMotPrintStat() {
+void dcMotPrintStat()
+{
     Serial.print("Setup: Motor turns ");
     Serial.print(mot.direction() == L298N::CW ?
                  "clock-wise" : "counter-clock-wise");
@@ -39,7 +42,8 @@ void dcMotPrintStat() {
     Serial.println(mot.speed());
 }
 
-void dcMotAdjust() {
+void dcMotAdjust()
+{
     int c;
     Serial.println("Setup: Motor off");
     mot.setDirection(L298N::CW);
@@ -76,7 +80,8 @@ void dcMotAdjust() {
     }
 }
 
-void dcMotRun() {
+void dcMotRun()
+{
     Serial.println("Demo: Run clock wise at 1% speed for 5s");
     mot.setDirection(L298N::CW);
     mot.setSpeed(1);
@@ -98,15 +103,17 @@ void dcMotRun() {
     delay(1000);
 }
 
-/* setup */
-void setup() {
+// setup
+void setup()
+{
 #ifdef DC_MOT
     dcMotSetup();
 #endif
 };
 
-/* main */
-void loop() {
+// main
+void loop()
+{
 #ifdef DC_MOT_ADJUST
     dcMotAdjust();
 #elif DC_MOT_RUN
