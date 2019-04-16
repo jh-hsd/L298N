@@ -21,7 +21,7 @@ class L298N {
               int speedPin, int minPwm);
 
         void setDirection(L298N::State dir);
-        L298N::State getDirection() const;
+        L298N::State direction() const;
 
         /* adjust speed
            speed: PWM duty cycle (0-255)
@@ -33,7 +33,7 @@ class L298N {
         void setSpeed(int speed, int duration = 0);
         /* returns either raw speed value (duty-cycle) or 
            percent value depending on the setSpeed method used */
-        int getSpeed() const;
+        int speed() const;
  
     private:
         int _dutyCycleFromPercent();

@@ -33,10 +33,10 @@ void dcMotAdjustHelp() {
 
 void dcMotPrintStat() {
     Serial.print("Setup: Motor turns ");
-    Serial.print(mot.getDirection() == L298N::CW ?
+    Serial.print(mot.direction() == L298N::CW ?
                  "clock-wise" : "counter-clock-wise");
     Serial.print(" at ");
-    Serial.println(mot.getSpeed());
+    Serial.println(mot.speed());
 }
 
 void dcMotAdjust() {
@@ -59,10 +59,10 @@ void dcMotAdjust() {
             mot.setDirection(L298N::CCW);
             break;
         case '+':
-            mot.setRawSpeed(mot.getSpeed() + 1);
+            mot.setRawSpeed(mot.speed() + 1);
             break;
         case '-':
-            mot.setRawSpeed(mot.getSpeed() - 1);
+            mot.setRawSpeed(mot.speed() - 1);
             break;
         case 'o':
             mot.setRawSpeed(0);

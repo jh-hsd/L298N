@@ -25,7 +25,7 @@ void L298N::setDirection(L298N::State dir) {
     _update();
 }
 
-L298N::State L298N::getDirection() const {
+L298N::State L298N::direction() const {
     return _direction;
 }
 
@@ -77,7 +77,7 @@ void L298N::setSpeed(int speed, int duration) {
     _update();
 }
 
-int L298N::getSpeed() const {
+int L298N::speed() const {
     return _speed;
 }
 
