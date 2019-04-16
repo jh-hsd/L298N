@@ -1,4 +1,4 @@
-## A library to use the L298N board from ELEGOO with a Arduino
+## An Arduino library for the L298N board from ELEGOO
 
 ![Image of L298N Board from ELEGOO](/l298n.png?raw=true)
 
